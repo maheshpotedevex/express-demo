@@ -1,3 +1,5 @@
+const morgan = require('morgan');
+const helmet = require('helmet');
 const Joi = require('joi');
 const logger = require('./logger');
 const express = require('express');
@@ -11,6 +13,8 @@ app.use(logger.log);
 app.use(logger.authenticate);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(helmet()); // Helmet helps you secure your Express apps by setting various HTTP headers.
+app.use(morgan('tiny')); //HTTP request logger. - Everytime request to the server. It will be logged.
 
 let courses = [
     { id: 1, name: "course1", code: 123, srno: 7412, author: "Mahesh Pote", mobile: 8087791904, email: "mpote97@gmail.com" },
