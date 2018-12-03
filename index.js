@@ -1,9 +1,16 @@
 const Joi = require('joi');
+const logger = require('./logger');
 const express = require('express');
 const app = express();
 
 // Middleware
 app.use(express.json());
+
+// Creating custom middleware
+app.use(logger.log);
+app.use(logger.authenticate);
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
 let courses = [
     { id: 1, name: "course1", code: 123, srno: 7412, author: "Mahesh Pote", mobile: 8087791904, email: "mpote97@gmail.com" },
@@ -40,7 +47,6 @@ app.post('/api/courses', (req, res) => {
         res.status(400).send(error.details[0].message);
         return;
     }
-
     const course = {
         id: courses.length + 1,
         name: req.body.name

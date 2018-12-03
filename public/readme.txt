@@ -1,0 +1,1 @@
+Hi this is my first static middleware file. Great Stuff!
