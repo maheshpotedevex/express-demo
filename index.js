@@ -4,6 +4,9 @@ const Joi = require('joi');
 const logger = require('./logger');
 const express = require('express');
 const app = express();
+// Working with different environment like dev, testing, staging, production etc.
+//console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+//console.log(`app: ${app.get('env')}`);
 
 // Middleware
 app.use(express.json());
@@ -14,11 +17,15 @@ app.use(logger.authenticate);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(helmet()); // Helmet helps you secure your Express apps by setting various HTTP headers.
-app.use(morgan('tiny')); //HTTP request logger. - Everytime request to the server. It will be logged.
+if (app.get('env') === 'development') {
+    app.use(morgan('tiny')); //HTTP request logger. - Everytime request to the server. It will be logged.
+    console.log("MOrgan is enable.....");
+}
+
 
 let courses = [
-    { id: 1, name: "course1", code: 123, srno: 7412, author: "Mahesh Pote", mobile: 8087791904, email: "mpote97@gmail.com" },
-    { id: 2, name: "course2", code: 456, srno: 8523, author: "SAtish Tarade", mobile: 7020203223, email: "maheshdevex@gmail.com" },
+    { id: 1, name: "course1", code: 123, srno: 7412, author: "Mahesh Pote", mobile: 8888888888, email: "mpote97@gmail.com" },
+    { id: 2, name: "course2", code: 456, srno: 8523, author: "SAtish Tarade", mobile: 7070707070, email: "maheshdevex@gmail.com" },
     { id: 3, name: "course3", code: 789, srno: 7492, author: "Jagsidh Jagdale", mobile: 9956325696, email: "lalit89@gmail.com" },
 ];
 app.get('/', (req, res) => {
