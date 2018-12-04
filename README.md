@@ -5,29 +5,29 @@ Methods:
 - Put()     : Update data    
 - Delete()  : Delete data
 
-A) Use Packages: 
+1. Use Packages: 
     - joi (Input validation)
     - config 
     - debug
     ----------------------------------
-B) Middleware:
+2. Middleware:
     - express.json()
     - express.urlencoded({ extended: true }) (key value pair)
     - express.static('public')
     - helmet()
     - morgan('tiny')
     ----------------------------------
-C) Environment:
+3. Environment:
     - cmd> export NODE_ENV=development
     - app.get('env') === 'development'
     - app.get('env') === 'production'  
     - app.get('env') === 'staging'  
     - app.get('env') === 'testing'
     ----------------------------------
-D) Config:
+4. Config:
     - cmd> npm i config   
     ----------------------------------
-E) Debugging:
+5. Debugging:
     - cmd> npm i debug    
     - cmd> export DEBUG=app:startup
     - cmd> export DEBUG=    (Do not shown Debugging messages.) 
@@ -36,15 +36,15 @@ E) Debugging:
     - cmd> DEBUG=app.db nodemon index.js (Shortcut command)
     - Prefer the debug module to the console.log() statement.
     ----------------------------------
-F) Templating Engines:
+6. Templating Engines:
     Most popular are 
     1. Pug (Generating dynamic HTML)
     2. Mustache
     3. EJS
     ----------------------------------
-G) Database Integration:  
-H) Authentication:
-I) Building Maintanable Routes: 
+7. Database Integration:  
+8. Authentication:
+9. Building Maintanable Routes: 
     - How to properly structure your application.
     1. Every logical part of our application for every api end point. we have       seperate file or seperate module.
 
