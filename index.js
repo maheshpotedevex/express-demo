@@ -1,9 +1,17 @@
+const startupDebugger = require('debug')('app:startup');
+const dbDebugger = require('debug')('app:db');
+const config = require('config');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const Joi = require('joi');
-const logger = require('./logger');
+const logger = require('./middleware/logger');
+const courses = require('./routes/courses');
+const home = require('./routes/home');
 const express = require('express');
 const app = express();
+// Set View Engine.
+app.set('view engine', 'pug'); // Don't have to required module. Internally its loaded.
+// Optional setting to store view path.
+app.set('views', './views');
 // Working with different environment like dev, testing, staging, production etc.
 //console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 //console.log(`app: ${app.get('env')}`);
@@ -17,99 +25,22 @@ app.use(logger.authenticate);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(helmet()); // Helmet helps you secure your Express apps by setting various HTTP headers.
+
+app.use(morgan('tiny')); //HTTP request logger. - Everytime request to the server. It will be logged.
+
+app.use('/', home); // Home router.
+app.use('/api/courses', courses); // Courses router
+// Configuration
+console.log('Applicaton Name: ' + config.get('name'));
+console.log('Mail Server: ' + config.get('mail.host'));
+
 if (app.get('env') === 'development') {
-    app.use(morgan('tiny')); //HTTP request logger. - Everytime request to the server. It will be logged.
-    console.log("MOrgan is enable.....");
+    // app.use(morgan('tiny')); 
+    // console.log("MOrgan is enable.....");
+    startupDebugger("Morgan is enable..");
 }
-
-
-let courses = [
-    { id: 1, name: "course1", code: 123, srno: 7412, author: "Mahesh Pote", mobile: 8888888888, email: "mpote97@gmail.com" },
-    { id: 2, name: "course2", code: 456, srno: 8523, author: "SAtish Tarade", mobile: 7070707070, email: "maheshdevex@gmail.com" },
-    { id: 3, name: "course3", code: 789, srno: 7492, author: "Jagsidh Jagdale", mobile: 9956325696, email: "lalit89@gmail.com" },
-];
-app.get('/', (req, res) => {
-    res.send('Hello World!!!');
-});
-
-app.get('/api/courses', (req, res) => {
-    //var courses = [1, 2, 3];
-    res.send(courses);
-});
-
-// Route Parameter or Get query string parameter
-app.get('/api/posts/:year/:month', (req, res) => {
-    // res.send(req.params);
-    res.send(req.query);
-});
-
-// Handling get request
-app.get('/api/courses/:id', (req, res) => {
-    const course = courses.find(c => c.id === parseInt(req.params.id));
-    if (!course) res.status(404).send("The course with given id was not found!");
-    res.send(course);
-});
-
-// Handling post request. // Create Operation.
-app.post('/api/courses', (req, res) => {
-    // Destructuring syntax    
-    const { error } = validateCourse(req.body); //result.error is same as {error}
-    if (error) {
-        res.status(400).send(error.details[0].message);
-        return;
-    }
-    const course = {
-        id: courses.length + 1,
-        name: req.body.name
-    };
-    courses.push(course);
-    if (!course) res.status(404).send("The course with given id was not found!");
-    res.send(course);
-});
-
-// Put request
-app.put('/api/courses/:id', (req, res) => {
-    // Look up the course
-    // If not existing, return 404
-    const course = courses.find(c => c.id === parseInt(req.params.id));
-    if (!course) res.status(404).send("The course with given id was not found!");
-
-    // Validation or invalid 400- Bad request.
-    // Destructuring syntax    
-    const { error } = validateCourse(req.body);
-    if (error) {
-        res.status(400).send(error.details[0].message);
-        return;
-    }
-    // Update Course
-    course.name = req.body.name;
-    res.send(course);
-});
-
-// seperate validation function
-function validateCourse(course) {
-    const schema = {
-        name: Joi.string().min(3).required()
-    };
-    // Now validate it
-    return Joi.validate(course, schema);
-}
-// Handing delete request
-app.delete('/api/courses/:id', (req, res) => {
-    // Look up the course
-    // not existing, return 404
-    const course = courses.find(c => c.id === parseInt(req.params.id));
-    if (!course) res.status(404).send("The course with given id was not found!");
-
-    // Delete
-    const index = courses.indexOf(course);
-    courses.splice(index, 1);
-    // return the same course.
-    res.send(course);
-});
-
-
-
+//DbWork...
+dbDebugger('Connected to the database....');
 // Port is dunamically assign from hosting env.
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}`));
