@@ -1,4 +1,4 @@
-REST API (Representational State Transfe Application Program Interface)
+REST API (Representational State Transfer Application Program Interface)
 Methods:
 - get()     : Select and get the data
 - post()    : Create data
